@@ -41,9 +41,14 @@ export const Clubs: React.FC = () => {
                     </span>
                   ))}
                 </div>
-                <button className="w-full py-2.5 bg-emerald-800 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm transition-colors">
+                <a
+                  href={club.joinLink || '#'}
+                  target={club.joinLink && club.joinLink !== '#' ? '_blank' : undefined}
+                  rel={club.joinLink && club.joinLink !== '#' ? 'noreferrer' : undefined}
+                  className="block w-full py-2.5 bg-emerald-800 hover:bg-emerald-700 text-white font-semibold rounded-xl text-sm transition-colors text-center"
+                >
                   Join Club
-                </button>
+                </a>
               </div>
             </div>
           ))}

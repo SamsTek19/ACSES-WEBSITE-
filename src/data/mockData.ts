@@ -131,7 +131,8 @@ export const CLUBS: ClubItem[] = [
     description: 'Designing, building, and programming autonomous robots and IoT devices for international robotics challenges.',
     image: 'https://res.cloudinary.com/ndm0k2b2/image/upload/v1789762018/download_56.jpg',
     tags: ['Robotics', 'Hardware', 'ROS', 'C++'],
-    iconName: 'Bot'
+    iconName: 'Bot',
+    joinLink: '#'
   },
   {
     id: '2',
@@ -140,7 +141,8 @@ export const CLUBS: ClubItem[] = [
     description: 'Exploring machine learning, deep neural networks, computer vision, and ethical AI through collaborative projects.',
     image: 'https://res.cloudinary.com/ndm0k2b2/image/upload/v1789762018/React_Developer.jpg',
     tags: ['AI', 'Python', 'PyTorch', 'Data Science'],
-    iconName: 'Brain'
+    iconName: 'Brain',
+    joinLink: '#'
   },
   {
     id: '3',
@@ -149,7 +151,8 @@ export const CLUBS: ClubItem[] = [
     description: 'Focused on ethical hacking, Capture The Flag (CTF) competitions, network auditing, and secure coding practices.',
     image: 'https://res.cloudinary.com/ndm0k2b2/image/upload/v1789762018/_Prepare_Your_Business_for_the_Biggest_Botnet__Essential_Cybersecurity_Insights_Measures_.jpg',
     tags: ['Security', 'CTF', 'Networking', 'Linux'],
-    iconName: 'ShieldCheck'
+    iconName: 'ShieldCheck',
+    joinLink: '#'
   },
     {
     id: '4',
@@ -158,7 +161,8 @@ export const CLUBS: ClubItem[] = [
     description: 'Promoting contributions to open-source software, hosting Git workshops, and facilitating group software projects.',
     image:'https://res.cloudinary.com/ndm0k2b2/image/upload/v1789766275/download_57.jpg',
     tags: ['Git', 'Full-Stack', 'Open Source', 'TypeScript'],
-    iconName: 'Code'
+    iconName: 'Code',
+    joinLink: 'https://chat.whatsapp.com/FDW7rJjS8EtIZ7KzHm9U10?s=cl&p=a&mlu=4&ilr=4'
   },
   {
     id: '5',
@@ -167,7 +171,8 @@ export const CLUBS: ClubItem[] = [
     description: 'Promoting contributions to open-source software, hosting Git workshops, and facilitating group software projects.',
     image: 'https://res.cloudinary.com/ndm0k2b2/image/upload/v1789766779/AI-Powered_Virtual_Support.jpg',
     tags: ['Git', 'Full-Stack', 'Open Source', 'TypeScript'],
-    iconName: 'Code'
+    iconName: 'Code',
+    joinLink: '#'
   },
     {
     id: '6',
@@ -176,68 +181,122 @@ export const CLUBS: ClubItem[] = [
     description: 'Promoting contributions to open-source software, hosting Git workshops, and facilitating group software projects.',
     image: 'https://res.cloudinary.com/ndm0k2b2/image/upload/v1789762018/download_55.jpg',
     tags: ['Git', 'Full-Stack', 'Open Source', 'TypeScript'],
-    iconName: 'Code'
+    iconName: 'Code',
+    joinLink: '#'
   }
 ];
 
 export const RESOURCES: ResourceItem[] = [
   {
     id: '1',
-    title: 'B.Tech CSE Full Curriculum & Syllabus (2026 Edition)',
+    title: 'Applied Electricity notes and Syllabus',
     category: 'Syllabus',
     fileSize: '2.4 MB',
     format: 'PDF',
     description: 'Complete course structures, credits, pre-requisites, and course outcomes for all semesters.',
-    link: '#'
+    link: 'https://drive.google.com/file/d/1g0k5J6Z7Z7Z7Z7Z7Z7Z7Z7Z7Z7Z7Z/view?usp=sharing'
   },
   {
     id: '2',
-    title: 'Data Structures & Algorithms Lab Handbook',
+    title: 'VMware Workstation Pro Lab Guide',
     category: 'Lab Guides',
     fileSize: '4.1 MB',
     format: 'PDF',
     description: 'Lab problems, expected complexity bounds, and template code in C++ and Java.',
-    link: '#'
+    link: 'https://www.vmware.com/products/workstation-pro.html'
   },
   {
     id: '3',
-    title: 'Departmental Cloud VM Setup Guide & IDE Configs',
+    title: 'Visual Studio Code Download & Setup Guide',
     category: 'Software',
     fileSize: '850 KB',
     format: 'PDF',
-    description: 'Instructions for setting up remote Linux development environments provided by the department.',
-    link: '#'
+    description: 'Download vs code, installation steps, and recommended extensions for C++, Python, and Java development.',
+    link: 'https://code.visualstudio.com/download?_exp_download=d53503e735'
   },
   {
     id: '4',
-    title: 'Undergraduate Research Thesis Guidelines',
+    title: 'IEEE Research Papers Formatting & Submission Guide',
     category: 'Research',
     fileSize: '1.2 MB',
     format: 'PDF',
     description: 'Formatting requirements, citation rules, submission deadlines, and evaluation rubrics.',
-    link: '#'
-  }
+    link: 'https://www.ieee.org/conferences/publishing/templates.html'
+  },
+  {
+    id: '5',
+    title: 'Pycharm IDE Download & Setup Guide',
+    category: 'Software',
+    fileSize: '850 KB',
+    format: 'PDF',
+    description: 'Download PyCharm, installation steps, and recommended extensions for Python development.',
+    link: 'https://www.jetbrains.com/pycharm/download/'
+  },
+  {
+    id: '6',
+    title: 'Python Programming Language Download & Setup Guide',
+    category: 'Software',
+    fileSize: '850 KB',
+    format: 'PDF',
+    description: 'Download Python, installation steps, and recommended extensions for Python development.',
+    link: 'https://www.python.org/downloads/'
+  },
+  {
+    id: '7',
+    title: 'Autocad Software Download & Setup Guide',
+    category: 'Software',
+    fileSize: '850 KB',
+    format: 'PDF',
+    description: 'Download Autocad, installation steps, and recommended extensions for architectural and engineering design.',
+    link: 'https://www.autodesk.com/products/autocad/free-trial'
+  },
+  {
+    id: '8',
+    title: 'Anylogic Software Download & Setup Guide',
+    category: 'Software',
+    fileSize: '850 KB',
+    format: 'PDF',
+    description: 'Download Anylogic, installation steps, and recommended extensions for simulation and modeling.',
+    link: 'https://www.anylogic.com/download/'
+  },
+  {
+    id: '9',
+    title: 'VMware Workstation Pro Download & Setup Guide',
+    category: 'Software',
+    fileSize: '850 KB',
+    format: 'PDF',
+    description: 'Download VMware Workstation Pro, installation steps, and recommended extensions for virtualization.',
+    link: 'https://www.vmware.com/products/workstation-pro.html'
+  },
+  {
+    id: '10',
+    title: 'VirtualBox Download & Setup Guide',
+    category: 'Software',
+    fileSize: '850 KB',
+    format: 'PDF',
+    description: 'Download VirtualBox, installation steps, and recommended extensions for virtualization.',
+    link: 'https://www.virtualbox.org/wiki/Downloads'
+  },
 ];
 
 export const EXECUTIVES: Executive[] = [
   {
     id: '1',
-    name: 'Dr. Robert Vance',
+    name: 'Dr. Vincent M. Nofong',
     role: 'Head of Department',
-    bio: 'Pioneer in distributed systems and parallel computing with over 20 years of research leadership.',
-    image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=600',
-    email: 'r.vance@cse.edu',
-    linkedin: 'https://linkedin.com',
-    github: 'https://github.com'
+    bio: 'Specialist in Embedded Systems, IoT, and Cyber-Physical Systems, leading the department towards cutting-edge research and innovation.',
+    image: 'https://res.cloudinary.com/dzydzt8x8/image/upload/v1790044032/vnofong1930688589_xgj56a.jpg',
+    email: 'vnofong@umat.edu.gh',
+    linkedin: 'https://www.linkedin.com/in/vincent-m-nofong-phd/',
   },
   {
     id: '2',
-    name: 'Dr. Elena Rostova',
+    name: 'Mr. Derick Duku',
     role: 'President',
-    bio: 'Specialist in Computer Vision and Human-Computer Interaction, guiding curriculum evolution.',
-    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=600',
+    bio: 'A year 4 computer science student with a passion for software development, AI, and community engagement, leading the department\'s student association.',
+    image: 'https://res.cloudinary.com/dzydzt8x8/image/upload/v1790047333/IMG_9094_c7shxu.jpg',
     email: 'e.rostova@cse.edu',
-    linkedin: 'https://linkedin.com'
+    linkedin: 'https://www.linkedin.com/in/derrick-duku-6ab823353/'
   },
   {
     id: '3',

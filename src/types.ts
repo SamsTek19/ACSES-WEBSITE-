@@ -28,6 +28,7 @@ export interface ClubItem {
   image?: string;
   tags: string[];
   iconName: string;
+  joinLink?: string;
 }
 
 export interface ResourceItem {

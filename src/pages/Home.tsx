@@ -265,7 +265,7 @@ export const Home: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {RESOURCES.map((res) => (
+            {RESOURCES.slice(0, 4).map((res) => (
               <div key={res.id} className="p-6 bg-slate-800/80 rounded-2xl border border-slate-700 flex justify-between items-start">
                 <div className="space-y-2">
                   <span className="px-2.5 py-1 bg-emerald-900/60 text-emerald-300 rounded-md text-xs font-semibold">
@@ -311,7 +311,7 @@ export const Home: React.FC = () => {
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Jane Doe"
+                      placeholder="Samuel Sarfo"
                       className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-slate-900 text-sm"
                     />
                   </div>
@@ -322,7 +322,7 @@ export const Home: React.FC = () => {
                       required
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="jane@example.com"
+                      placeholder="samsTek@example.com"
                       className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:outline-none text-slate-900 text-sm"
                     />
                   </div>
