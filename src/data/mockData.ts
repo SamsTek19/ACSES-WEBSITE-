@@ -141,6 +141,15 @@ export const RESOURCES: ResourceItem[] = [
   },
   {
     id: '4',
+    title: 'Visual Studio Code Download & Setup Guide Video',
+    category: 'Lab Guides',
+    fileSize: '850 KB',
+    format: 'Video',
+    description: 'Download vs code, installation steps, and recommended extensions for C++, Python, and Java development.',
+    link: 'https://youtu.be/zkYvFoNMNZc?si=BNa5_i6vC3HYusnM'
+  },
+  {
+    id: '5',
     title: 'IEEE Research Papers Formatting & Submission Guide',
     category: 'Research',
     fileSize: '1.2 MB',
@@ -149,7 +158,7 @@ export const RESOURCES: ResourceItem[] = [
     link: 'https://www.ieee.org/conferences/publishing/templates.html'
   },
   {
-    id: '5',
+    id: '6',
     title: 'Pycharm IDE Download & Setup Guide',
     category: 'Software',
     fileSize: '850 KB',
@@ -158,7 +167,7 @@ export const RESOURCES: ResourceItem[] = [
     link: 'https://www.jetbrains.com/pycharm/download/'
   },
   {
-    id: '6',
+    id: '7',
     title: 'Python Programming Language Download & Setup Guide',
     category: 'Software',
     fileSize: '850 KB',
@@ -167,7 +176,7 @@ export const RESOURCES: ResourceItem[] = [
     link: 'https://www.python.org/downloads/'
   },
   {
-    id: '7',
+    id: '8',
     title: 'Autocad Software Download & Setup Guide',
     category: 'Software',
     fileSize: '850 KB',
@@ -176,7 +185,7 @@ export const RESOURCES: ResourceItem[] = [
     link: 'https://www.autodesk.com/products/autocad/free-trial'
   },
   {
-    id: '8',
+    id: '9',
     title: 'Anylogic Software Download & Setup Guide',
     category: 'Software',
     fileSize: '850 KB',
@@ -185,7 +194,7 @@ export const RESOURCES: ResourceItem[] = [
     link: 'https://www.anylogic.com/download/'
   },
   {
-    id: '9',
+    id: '10',
     title: 'VMware Workstation Pro Download & Setup Guide',
     category: 'Software',
     fileSize: '850 KB',
@@ -194,7 +203,7 @@ export const RESOURCES: ResourceItem[] = [
     link: 'https://www.vmware.com/products/workstation-pro.html'
   },
   {
-    id: '10',
+    id: '11',
     title: 'VirtualBox Download & Setup Guide',
     category: 'Software',
     fileSize: '850 KB',
