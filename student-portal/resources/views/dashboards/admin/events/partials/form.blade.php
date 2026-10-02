@@ -121,12 +121,12 @@
 
     <div class="grid gap-4 md:grid-cols-2">
         <div class="flex flex-col gap-1.5">
-            <label for="start_at" class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Start date &amp; time</label>
+            <label for="start_at" class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Start date &amp; time (optional)</label>
             <div class="relative">
                 <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-[#0b3019]">
                     <i class="ri-time-fill text-sm" aria-hidden="true"></i>
                 </span>
-                <input id="start_at" name="start_at" type="datetime-local" required value="{{ $startValue }}" class="h-9 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-xs text-slate-700 focus:border-[#0b3019] focus:outline-none focus:ring-1 focus:ring-[#0b3019]" />
+                <input id="start_at" name="start_at" type="datetime-local" value="{{ $startValue }}" class="h-9 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-xs text-slate-700 focus:border-[#0b3019] focus:outline-none focus:ring-1 focus:ring-[#0b3019]" />
             </div>
             @error('start_at')
                 <p class="text-xs text-rose-600">{{ $message }}</p>
@@ -145,6 +145,14 @@
                 <p class="text-xs text-rose-600">{{ $message }}</p>
             @enderror
         </div>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+        <label for="time_label" class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Display time when date is unannounced</label>
+        <input id="time_label" name="time_label" type="text" maxlength="80" value="{{ old('time_label', $event->time_label) }}" class="h-9 w-full rounded-lg border border-slate-200 bg-white px-3 text-xs text-slate-700 focus:border-[#0b3019] focus:outline-none focus:ring-1 focus:ring-[#0b3019]" placeholder="e.g. 9:00 AM - 6:00 PM" />
+        @error('time_label')
+            <p class="text-xs text-rose-600">{{ $message }}</p>
+        @enderror
     </div>
 
     <div class="grid gap-4 md:grid-cols-2">
@@ -170,6 +178,19 @@
                 <input id="cta_url" name="cta_url" type="url" maxlength="255" value="{{ old('cta_url', $event->cta_url) }}" class="h-9 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-xs text-slate-700 focus:border-[#0b3019] focus:outline-none focus:ring-1 focus:ring-[#0b3019]" placeholder="https://" />
             </div>
             @error('cta_url')
+                <p class="text-xs text-rose-600">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+            <label for="memories_link" class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Memories link</label>
+            <div class="relative">
+                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-[#0b3019]">
+                    <i class="ri-image-2-line text-sm" aria-hidden="true"></i>
+                </span>
+                <input id="memories_link" name="memories_link" type="url" maxlength="255" value="{{ old('memories_link', $event->memories_link) }}" class="h-9 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-xs text-slate-700 focus:border-[#0b3019] focus:outline-none focus:ring-1 focus:ring-[#0b3019]" placeholder="https://" />
+            </div>
+            @error('memories_link')
                 <p class="text-xs text-rose-600">{{ $message }}</p>
             @enderror
         </div>

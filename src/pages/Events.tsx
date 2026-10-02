@@ -4,7 +4,7 @@ import { useEvents } from '../lib/useEvents';
 
 export const Events: React.FC = () => {
   const { events, status } = useEvents();
-  const [filter, setFilter] = useState<'All' | 'Upcoming' | 'Past'>('All');
+  const [filter, setFilter] = useState<'All' | 'Upcoming' | 'Past' | 'Unscheduled'>('All');
 
   const filteredEvents = events.filter(
     e => filter === 'All' || e.category === filter
@@ -21,8 +21,8 @@ export const Events: React.FC = () => {
         </div>
 
         {/* Filters */}
-        <div className="flex justify-center mb-8 space-x-2">
-          {(['All', 'Upcoming', 'Past'] as const).map((cat) => (
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
+          {(['All', 'Upcoming', 'Past', 'Unscheduled'] as const).map((cat) => (
             <button
               key={cat}
               onClick={() => setFilter(cat)}
@@ -44,11 +44,15 @@ export const Events: React.FC = () => {
           {status === 'ready' && filteredEvents.length === 0 && <p className="md:col-span-3 text-center text-slate-500">No events match this filter.</p>}
           {filteredEvents.map((event) => (
             <div key={event.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col">
-              <img src={event.image} alt={event.imageAlt ?? event.title} className="h-48 w-full object-cover" />
+              <img src={event.image} alt={event.imageAlt ?? event.title} loading="lazy" decoding="async" className="h-48 w-full object-cover" />
               <div className="p-6 flex-1 flex flex-col justify-between">
                 <div>
                   <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 ${
-                    event.category === 'Upcoming' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'
+                    event.category === 'Upcoming'
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : event.category === 'Unscheduled'
+                        ? 'bg-amber-100 text-amber-800'
+                        : 'bg-slate-100 text-slate-700'
                   }`}>
                     {event.category}
                   </span>
@@ -57,7 +61,7 @@ export const Events: React.FC = () => {
                   <p className="text-slate-600 text-sm mb-4 leading-relaxed">{event.description}</p>
                 </div>
 
-                {event.category === 'Past' && event.memoriesLink ? (
+                {event.memoriesLink ? (
                   <a
                     href={event.memoriesLink}
                     target="_blank"

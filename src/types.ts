@@ -4,7 +4,7 @@ export interface EventItem {
   date: string;
   time: string;
   location: string;
-  category: 'Upcoming' | 'Past';
+  category: 'Upcoming' | 'Past' | 'Unscheduled';
   memoriesLink?: string;
   link?: string;
   description: string;

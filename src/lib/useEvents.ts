@@ -13,7 +13,7 @@ export const useEvents = () => {
   useEffect(() => {
     const controller = new AbortController();
 
-    fetch(eventsApiUrl, { signal: controller.signal, cache: 'no-store' })
+    fetch(eventsApiUrl, { signal: controller.signal })
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Events request failed with status ${response.status}`);

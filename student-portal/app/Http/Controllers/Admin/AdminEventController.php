@@ -26,6 +26,7 @@ class AdminEventController extends Controller
         }
 
         $events = Event::query()
+            ->orderByRaw('CASE WHEN start_at IS NULL THEN 1 ELSE 0 END')
             ->orderByDesc('start_at')
             ->paginate($perPage)
             ->appends([

@@ -182,7 +182,7 @@ export const Home: React.FC = () => {
             {eventsStatus === 'ready' && events.length === 0 && <p className="md:col-span-3 text-center text-slate-500">No events have been published yet.</p>}
             {events.slice(0, 3).map((event) => (
               <div key={event.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
-                <img src={event.image} alt={event.imageAlt ?? event.title} className="h-48 w-full object-cover" />
+                <img src={event.image} alt={event.imageAlt ?? event.title} loading="lazy" decoding="async" className="h-48 w-full object-cover" />
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
                     <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 ${
@@ -194,7 +194,7 @@ export const Home: React.FC = () => {
                     <h3 className="font-bold text-slate-900 text-lg mb-2">{event.title}</h3>
                     <p className="text-slate-600 text-sm line-clamp-2 mb-4">{event.description}</p>
                   </div>
-                  {event.category === 'Past' && event.memoriesLink ? (
+                  {event.memoriesLink ? (
                     <a href={event.memoriesLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 border-t border-slate-100 pt-4 text-sm font-bold text-emerald-800 hover:text-emerald-600">
                       View memories
                       <ArrowRight className="h-4 w-4" />

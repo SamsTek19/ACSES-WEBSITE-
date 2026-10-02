@@ -21,10 +21,12 @@ class PublicEventsApiTest extends TestCase
             $table->string('title');
             $table->string('location')->nullable();
             $table->text('description')->nullable();
-            $table->dateTime('start_at');
+            $table->dateTime('start_at')->nullable();
             $table->dateTime('end_at')->nullable();
+            $table->string('time_label', 80)->nullable();
             $table->string('category')->nullable();
             $table->string('cta_url')->nullable();
+            $table->string('memories_link')->nullable();
             $table->string('banner_path')->nullable();
             $table->string('banner_alt')->nullable();
             $table->timestamps();
@@ -75,21 +77,37 @@ class PublicEventsApiTest extends TestCase
             'start_at' => $pastStartAt,
             'end_at' => $pastStartAt->copy()->addHours(2),
             'category' => 'Lecture',
+            'memories_link' => 'https://example.com/event-memories',
+        ]);
+
+        Event::query()->create([
+            'title' => 'Unscheduled symposium',
+            'time_label' => '09:00 AM - 06:00 PM',
+            'category' => 'Symposium',
         ]);
 
         $this->withHeaders(['Origin' => 'http://localhost:5173'])
             ->getJson('/api/public/events')
             ->assertOk()
+            ->assertHeader('Cache-Control', 'max-age=30, public, stale-while-revalidate=120')
+            ->assertHeader('Vary', 'Origin')
             ->assertHeader('Access-Control-Allow-Origin', 'http://localhost:5173')
-            ->assertJsonCount(2)
+            ->assertJsonCount(3)
             ->assertJsonPath('0.title', 'Admin-created workshop')
             ->assertJsonPath('0.category', 'Upcoming')
             ->assertJsonPath('0.eventType', 'Workshop')
             ->assertJsonPath('0.location', 'Main Auditorium')
             ->assertJsonPath('0.link', 'https://example.com/register')
+            ->assertJsonPath('0.memoriesLink', null)
             ->assertJsonPath('0.time', '10:00 AM - 12:00 PM')
             ->assertJsonPath('1.title', 'Recent past event')
-            ->assertJsonPath('1.category', 'Past');
+            ->assertJsonPath('1.category', 'Past')
+            ->assertJsonPath('1.memoriesLink', 'https://example.com/event-memories')
+            ->assertJsonPath('1.link', null)
+            ->assertJsonPath('2.title', 'Unscheduled symposium')
+            ->assertJsonPath('2.category', 'Unscheduled')
+            ->assertJsonPath('2.date', 'To be announced')
+            ->assertJsonPath('2.time', '09:00 AM - 06:00 PM');
 
         Event::query()->create([
             'title' => 'Newly published event',
@@ -99,7 +117,7 @@ class PublicEventsApiTest extends TestCase
 
         $this->getJson('/api/public/events')
             ->assertOk()
-            ->assertJsonCount(3)
+            ->assertJsonCount(4)
             ->assertJsonPath('0.title', 'Newly published event');
     }
 
