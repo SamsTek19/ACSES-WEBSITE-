@@ -10,8 +10,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::unprepared('DROP TRIGGER IF EXISTS `after_user_insert`');
-        DB::unprepared('DROP TRIGGER IF EXISTS `after_user_update`');
+        if (in_array(DB::getDriverName(), ['mysql', 'mariadb'], true)) {
+            DB::unprepared('DROP TRIGGER IF EXISTS `after_user_insert`');
+            DB::unprepared('DROP TRIGGER IF EXISTS `after_user_update`');
+        }
     }
 
     /**

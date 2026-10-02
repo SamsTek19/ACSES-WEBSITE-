@@ -12,6 +12,8 @@ class Suggestion extends Model
 
     protected $fillable = [
         'user_id',
+        'sender_name',
+        'sender_email',
         'category',
         'subject',
         'message',

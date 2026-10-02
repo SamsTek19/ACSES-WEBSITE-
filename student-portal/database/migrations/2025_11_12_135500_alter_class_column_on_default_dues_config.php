@@ -7,6 +7,13 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (DB::getDriverName() === 'pgsql') {
+            DB::statement('ALTER TABLE default_dues_config DROP CONSTRAINT IF EXISTS default_dues_config_class_check');
+            DB::statement('ALTER TABLE default_dues_config ALTER COLUMN class TYPE VARCHAR(100)');
+
+            return;
+        }
+
         DB::statement("ALTER TABLE `default_dues_config` MODIFY `class` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL");
     }
 

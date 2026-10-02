@@ -2,7 +2,6 @@
     <div class="mx-auto w-full max-w-[1600px] px-5 py-8 sm:px-6 lg:px-8 relative">
         <div class="space-y-8 relative z-10">
             
-            @php($duesAction = collect($quickActions ?? [])->firstWhere('label', 'Outstanding dues'))
             @php($nextEvent = ($events ?? collect())->first())
 
             <!-- Hero Section: Mobile (compact) -->
@@ -13,16 +12,7 @@
                         <h1 class="mt-0.5 text-base font-bold tracking-tight truncate">
                             {{ $hero['greeting'] ?? 'Welcome back' }}, {{ $hero['first_name'] ?? 'Student' }}!
                         </h1>
-                        @if ($duesAction)
-                            <div class="mt-1.5 flex items-center gap-1.5 text-xs text-emerald-100/80">
-                                <i data-lucide="wallet" class="h-3 w-3 text-emerald-400 shrink-0"></i>
-                                <span>{{ $duesAction['state'] ?? 'Dues' }}{{ !empty($duesAction['value']) ? ' · ' . $duesAction['value'] : '' }}</span>
-                            </div>
-                        @endif
                     </div>
-                    <a href="{{ route('student.dues.index') }}" class="shrink-0 flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25 active:scale-95">
-                        <i data-lucide="wallet" class="h-4 w-4"></i>
-                    </a>
                 </div>
             </section>
 
@@ -36,21 +26,12 @@
                             {{ $hero['greeting'] ?? 'Welcome back' }}, {{ $hero['first_name'] ?? 'Student' }}!
                         </h1>
                         <p class="mt-3 max-w-2xl text-base text-emerald-50/80">
-                            {{ $hero['message'] ?? 'Stay on top of your academic tasks, dues, and campus life in one place.' }}
+                            {{ $hero['message'] ?? 'Stay on top of your academic tasks and campus life in one place.' }}
                         </p>
                     </div>
 
-                    @if ($duesAction || $nextEvent)
+                    @if ($nextEvent)
                         <div class="flex flex-wrap items-center gap-4 border-t border-emerald-800/50 pt-5">
-                            @if ($duesAction)
-                                <div class="flex items-center gap-2 text-sm text-emerald-100">
-                                    <i data-lucide="wallet" class="h-4 w-4 text-emerald-400"></i>
-                                    <span class="font-medium">{{ $duesAction['state'] ?? 'Dues' }}</span>
-                                    @if (!empty($duesAction['value']))
-                                        <span class="opacity-75">&middot; {{ $duesAction['value'] }}</span>
-                                    @endif
-                                </div>
-                            @endif
                             @if ($nextEvent)
                                 <div class="flex items-center gap-2 text-sm text-emerald-100">
                                     <i data-lucide="calendar" class="h-4 w-4 text-emerald-400"></i>
@@ -72,15 +53,13 @@
                     <article class="group relative overflow-hidden rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:shadow-[0_12px_30px_-10px_rgba(0,0,0,0.08)] hover:-translate-y-1 hover:border-[#0b3019]/30 animate-fade-slide {{ $delayClass }}">
                         <div class="flex items-start gap-4">
                             <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-slate-50 text-[#0b3019] group-hover:bg-[#0b3019]/5 group-hover:scale-110 transition-all duration-300">
-                                <i data-lucide="{{ $index === 0 ? 'wallet' : ($index === 1 ? 'calendar-check' : 'bell') }}" class="h-5 w-5"></i>
+                                <i data-lucide="{{ $index === 0 ? 'bell' : 'book-open' }}" class="h-5 w-5"></i>
                             </div>
                             <div class="flex-1 space-y-1">
                                 <div class="flex items-center justify-between gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
                                     <span>{{ $action['label'] ?? 'Action' }}</span>
                                     @if (!empty($action['state']))
-                                        @php($stateLower = strtolower($action['state']))
-                                        @php($badgeStyle = str_contains($stateLower, 'owing') || str_contains($stateLower, 'outstanding') ? 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-200' : (str_contains($stateLower, 'cleared') || str_contains($stateLower, 'paid') ? 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200' : 'bg-slate-100 text-slate-600'))
-                                        <span class="rounded-md px-2 py-0.5 text-[10px] font-semibold {{ $badgeStyle }}">
+                                        <span class="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600">
                                             {{ $action['state'] }}
                                         </span>
                                     @endif

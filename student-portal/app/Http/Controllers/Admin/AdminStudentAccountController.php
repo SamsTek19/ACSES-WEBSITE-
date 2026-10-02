@@ -7,7 +7,6 @@ use App\Http\Requests\Admin\StoreStudentRequest;
 use App\Http\Requests\Admin\UpdateStudentRequest;
 use App\Models\User;
 use App\Services\Admin\StudentAccountService;
-use App\Services\Admin\AdminDueService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -17,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminStudentAccountController extends Controller
 {
-    public function __construct(private readonly StudentAccountService $service, private readonly AdminDueService $dues)
+    public function __construct(private readonly StudentAccountService $service)
     {
     }
 
@@ -80,8 +79,6 @@ class AdminStudentAccountController extends Controller
         $student->password = Hash::make($data['password']);
         $student->save();
 
-        $this->dues->syncStudent($student);
-
         return redirect()
             ->route('admin.students.show', $student)
             ->with('status', __('Student account created successfully.'));
@@ -133,8 +130,6 @@ class AdminStudentAccountController extends Controller
         }
 
         $student->save();
-
-        $this->dues->syncStudent($student);
 
         return redirect()
             ->route('admin.students.show', $student)

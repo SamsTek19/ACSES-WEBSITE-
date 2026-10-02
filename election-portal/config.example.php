@@ -33,7 +33,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Error reporting based on environment
-$environment = getenv('APP_ENV') ?: 'development';
+$environment = getenv('APP_ENV') ?: 'production';
 if ($environment === 'development') {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);

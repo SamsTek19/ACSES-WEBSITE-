@@ -9,6 +9,24 @@
 5. Confirm both applications run before changing code.
 6. Create a feature branch for each coherent change.
 
+## First administrator account
+
+After configuring the student portal database and running its migrations, create the
+first administrator from the `student-portal` directory with
+`php artisan admin:create-first`. The command prompts for the account details and
+hides the password input. It refuses to run when an administrator already exists.
+Sign in at `/admin/login`; additional administrator accounts can then be provisioned
+from Admin profile. The current form assigns a temporary password but does not send
+an email invitation.
+
+## Public website events
+
+The React website reads events from the student portal's read-only
+`GET /api/public/events` endpoint. Set `PUBLIC_WEBSITE_URL` in the student portal
+to the website's exact origin (comma-separated if there are multiple origins), and
+set `VITE_EVENTS_API_URL` in the website build environment to the full endpoint URL.
+Event creation and edits remain restricted to authenticated administrators.
+
 ## Engineering expectations
 
 - Preserve role separation between students and administrators.
@@ -20,7 +38,7 @@
 - Keep credentials and service keys in ignored environment files.
 - Use sandbox accounts for payment, SMS, and email integrations.
 - Validate uploaded files by MIME type, extension, size, and authorization.
-- Add automated tests for authentication, authorization, payments, and voting.
+- Add automated tests for authentication, authorization, registration, and voting.
 
 ## Required documentation for every return
 
@@ -49,8 +67,8 @@ php artisan route:list
 ```
 
 Also exercise registration, email verification, login OTP, admin authorization,
-dues/payment sandbox flows, election access links, voting, duplicate-vote prevention,
-and result visibility using disposable local accounts.
+student portal access, election access links, voting, duplicate-vote prevention, and
+result visibility using disposable local accounts. Dues/payment workflows are disabled.
 
 ## Return archive
 

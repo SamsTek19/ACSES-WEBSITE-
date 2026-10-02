@@ -77,7 +77,7 @@ export const Footer: React.FC = () => {
               </li>
               <li className="flex items-center space-x-3">
                 <Mail className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>info@acses.edu.gh</span>
+                <span>acses.umat.hq@gmail.com</span>
               </li>
             </ul>
           </div>
@@ -87,9 +87,9 @@ export const Footer: React.FC = () => {
         <div className="pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500 space-y-4 md:space-y-0">
           <p>© {new Date().getFullYear()} Department of Computer Science & Engineering. All rights reserved.</p>
           <div className="flex space-x-6">
-            <a href="#" className="hover:text-emerald-400 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-emerald-400 transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-emerald-400 transition-colors">Accessibility Policy</a>
+            <Link to="/privacy-policy" className="hover:text-emerald-400 transition-colors">Privacy Policy</Link>
+            <Link to="/terms-of-service" className="hover:text-emerald-400 transition-colors">Terms of Service</Link>
+            <Link to="/accessibility-policy" className="hover:text-emerald-400 transition-colors">Accessibility Policy</Link>
           </div>
         </div>
       </div>

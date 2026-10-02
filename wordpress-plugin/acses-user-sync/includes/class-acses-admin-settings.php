@@ -471,6 +471,7 @@ class ACSES_Admin_Settings {
 
     public function sanitize($input) {
         $new_input = array();
+        $existing_options = get_option('acses_user_sync_options', array());
         
         if (isset($input['portal_host'])) {
             $new_input['portal_host'] = sanitize_text_field($input['portal_host']);
@@ -480,8 +481,10 @@ class ACSES_Admin_Settings {
             $new_input['portal_username'] = sanitize_text_field($input['portal_username']);
         }
 
-        if (isset($input['portal_password'])) {
+        if (isset($input['portal_password']) && $input['portal_password'] !== '') {
             $new_input['portal_password'] = sanitize_text_field($input['portal_password']);
+        } elseif (isset($existing_options['portal_password'])) {
+            $new_input['portal_password'] = $existing_options['portal_password'];
         }
 
         if (isset($input['portal_database'])) {
@@ -523,8 +526,7 @@ class ACSES_Admin_Settings {
 
     public function portal_password_callback() {
         printf(
-            '<input type="password" id="portal_password" name="acses_user_sync_options[portal_password]" value="%s" class="regular-text" />',
-            isset($this->options['portal_password']) ? esc_attr($this->options['portal_password']) : ''
+            '<input type="password" id="portal_password" name="acses_user_sync_options[portal_password]" value="" class="regular-text" autocomplete="new-password" placeholder="Leave blank to keep the saved password" />'
         );
     }
 

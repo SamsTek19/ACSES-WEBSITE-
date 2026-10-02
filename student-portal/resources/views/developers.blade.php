@@ -31,7 +31,7 @@
                         Meet the Engineers Behind ACSES
                     </h1>
                     <p class="mx-auto max-w-xl text-sm text-slate-500 leading-relaxed sm:text-base">
-                        We design, build, and maintain the digital infrastructure driving student operations, payments, and portal workflows across the department.
+                        We design, build, and maintain the digital infrastructure supporting student services, academic resources, and portal workflows across the department.
                     </p>
                 </header>
 

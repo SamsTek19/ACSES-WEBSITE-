@@ -7,7 +7,6 @@ use App\Mail\PendingRegistration\ApplicationReceivedMail;
 use App\Mail\PendingRegistration\ApplicationRejectedMail;
 use App\Models\PendingRegistration;
 use App\Models\User;
-use App\Services\Admin\AdminDueService;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -16,7 +15,6 @@ use Illuminate\Support\Str;
 class PendingRegistrationService
 {
     public function __construct(
-        private readonly AdminDueService $dueService,
         private readonly StudentEmailValidator $emailValidator,
     ) {
     }
@@ -89,9 +87,6 @@ class PendingRegistrationService
                 'reviewed_by' => $admin->user_id,
                 'reviewed_at' => Carbon::now(),
             ]);
-
-            // Sync dues for the new student
-            $this->dueService->syncStudent($user);
 
             // Send approval email with credentials
             $this->sendApprovalEmail($registration, $user);

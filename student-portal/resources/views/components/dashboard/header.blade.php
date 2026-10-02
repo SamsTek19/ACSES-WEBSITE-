@@ -67,10 +67,6 @@
                         <i data-lucide="calendar" class="h-4 w-4 text-slate-400 group-hover/item:text-[#0b3019]/70 group-hover/item:scale-105 transition-all duration-200"></i>
                         Events
                     </a>
-                    <a href="{{ route('student.dues.index') }}" class="flex items-center gap-3 rounded-lg px-3 py-2 transition-all duration-200 hover:bg-[#0b3019]/5 hover:text-[#0b3019] group/item">
-                        <i data-lucide="wallet" class="h-4 w-4 text-slate-400 group-hover/item:text-[#0b3019]/70 group-hover/item:scale-105 transition-all duration-200"></i>
-                        Dues
-                    </a>
                     <a href="{{ route('student.resources.index') }}" class="flex items-center gap-3 rounded-lg px-3 py-2 transition-all duration-200 hover:bg-[#0b3019]/5 hover:text-[#0b3019] group/item">
                         <i data-lucide="book-open" class="h-4 w-4 text-slate-400 group-hover/item:text-[#0b3019]/70 group-hover/item:scale-105 transition-all duration-200"></i>
                         Resources
@@ -150,10 +146,6 @@
                         <a href="{{ route('student.events.index') }}" class="flex items-center gap-3 rounded-lg px-3 py-2 transition-all duration-200 hover:bg-[#0b3019]/5 hover:text-[#0b3019] group/mobile-item">
                             <i data-lucide="calendar" class="h-4 w-4 text-slate-400 group-hover/mobile-item:text-[#0b3019]/70 group-hover/mobile-item:scale-105 transition-all duration-200"></i>
                             Events
-                        </a>
-                        <a href="{{ route('student.dues.index') }}" class="flex items-center gap-3 rounded-lg px-3 py-2 transition-all duration-200 hover:bg-[#0b3019]/5 hover:text-[#0b3019] group/mobile-item">
-                            <i data-lucide="wallet" class="h-4 w-4 text-slate-400 group-hover/mobile-item:text-[#0b3019]/70 group-hover/mobile-item:scale-105 transition-all duration-200"></i>
-                            Dues
                         </a>
                         <a href="{{ route('student.resources.index') }}" class="flex items-center gap-3 rounded-lg px-3 py-2 transition-all duration-200 hover:bg-[#0b3019]/5 hover:text-[#0b3019] group/mobile-item">
                             <i data-lucide="book-open" class="h-4 w-4 text-slate-400 group-hover/mobile-item:text-[#0b3019]/70 group-hover/mobile-item:scale-105 transition-all duration-200"></i>

@@ -1,12 +1,8 @@
 <?php
 require_once '../config.php';
 
-// Debug logging
-error_log("Admin dashboard access attempt - Session data: " . print_r($_SESSION, true));
-
 // Check if user is logged in and is an admin
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || $_SESSION['role'] !== 'admin') {
-    error_log("Admin session validation failed - Redirecting to access.php");
     header("Location: ../access");
     exit();
 }
@@ -17,19 +13,19 @@ $stmt->execute([$_SESSION['user_id']]);
 $admin = $stmt->fetch();
 
 if (!$admin) {
-    error_log("Admin user not found in database - Clearing session and redirecting");
     session_unset();
     session_destroy();
     header("Location: ../access");
     exit();
 }
 
-error_log("Admin authenticated successfully - Proceeding to admin dashboard");
-
 // Get active elections
 $stmt = $pdo->prepare("SELECT * FROM elections WHERE status = 'active'");
 $stmt->execute();
 $elections = $stmt->fetchAll();
+
+$stmt = $pdo->query("SELECT id, title FROM elections ORDER BY start_date DESC");
+$allElections = $stmt->fetchAll();
 
 // Get all positions
 $stmt = $pdo->prepare("SELECT * FROM elections_positions ORDER BY title");
@@ -315,6 +311,15 @@ $positions = $stmt->fetchAll();
             <div class="card-body">
                 <form method="POST" action="update_election_time" class="needs-validation" novalidate>
                     <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+                    <div class="mb-3">
+                        <label for="election_id" class="form-label">Election</label>
+                        <select class="form-select" id="election_id" name="election_id" required>
+                            <option value="">Select an election</option>
+                            <?php foreach ($allElections as $election): ?>
+                                <option value="<?php echo (int) $election['id']; ?>"><?php echo htmlspecialchars($election['title'], ENT_QUOTES, 'UTF-8'); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">

@@ -66,7 +66,7 @@
                         <label for="filter_search" class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Search</label>
                         <div class="relative">
                             <i class="ri-search-line pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                            <input id="filter_search" type="search" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="Subject, message, student…" class="h-9 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-sm text-slate-700 shadow-sm transition focus:border-[#0b3019] focus:outline-none focus:ring-2 focus:ring-[#0b3019]/20" />
+                            <input id="filter_search" type="search" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="Subject, message, sender…" class="h-9 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-sm text-slate-700 shadow-sm transition focus:border-[#0b3019] focus:outline-none focus:ring-2 focus:ring-[#0b3019]/20" />
                         </div>
                     </div>
 
@@ -161,7 +161,7 @@
                                 <th scope="col" class="w-12 px-6 py-3">
                                     <input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-[#0b3019] focus:ring-[#0b3019]" @change="toggleAll($event.target.checked)" :checked="allSelected">
                                 </th>
-                                <th scope="col" class="px-6 py-3">Student</th>
+                                <th scope="col" class="px-6 py-3">From</th>
                                 <th scope="col" class="px-6 py-3">Category</th>
                                 <th scope="col" class="px-6 py-3">Subject</th>
                                 <th scope="col" class="px-6 py-3">Status</th>
@@ -176,8 +176,8 @@
                                         <input type="checkbox" name="ids[]" value="{{ $suggestion->id }}" class="h-4 w-4 rounded border-slate-300 text-[#0b3019] focus:ring-[#0b3019]" @change="toggle({{ $suggestion->id }}, $event.target.checked)" :checked="selectedIds.includes({{ $suggestion->id }})">
                                     </td>
                                     <td class="px-6 py-3.5">
-                                        <p class="text-sm font-semibold text-slate-900 leading-tight">{{ $suggestion->user?->fullname ?? $suggestion->user?->username ?? 'Unknown student' }}</p>
-                                        <p class="text-xs text-slate-400">{{ $suggestion->user?->email }}</p>
+                                        <p class="text-sm font-semibold text-slate-900 leading-tight">{{ $suggestion->user?->fullname ?? $suggestion->user?->username ?? ($suggestion->user_id === null ? ($suggestion->sender_name ?? 'Website contact') : 'Unknown student') }}</p>
+                                        <p class="text-xs text-slate-400">{{ $suggestion->user?->email ?? $suggestion->sender_email ?? ($suggestion->user_id === null ? 'Public website' : '') }}</p>
                                     </td>
                                     <td class="px-6 py-3.5 text-xs text-slate-500">{{ $categories[$suggestion->category] ?? Str::headline($suggestion->category) }}</td>
                                     <td class="px-6 py-3.5">
@@ -243,7 +243,10 @@
                             <div class="flex items-start justify-between gap-3">
                                 <div class="min-w-0 flex-1">
                                     <p class="text-sm font-semibold text-slate-900 leading-tight">{{ $suggestion->subject }}</p>
-                                    <p class="mt-0.5 text-xs text-slate-500">{{ $suggestion->user?->fullname ?? $suggestion->user?->username ?? 'Unknown student' }}</p>
+                                    <p class="mt-0.5 text-xs text-slate-500">{{ $suggestion->user?->fullname ?? $suggestion->user?->username ?? ($suggestion->user_id === null ? ($suggestion->sender_name ?? 'Website contact') : 'Unknown student') }}</p>
+                                    @if ($suggestion->sender_email)
+                                        <p class="mt-0.5 text-xs text-slate-400">{{ $suggestion->sender_email }}</p>
+                                    @endif
                                 </div>
                                 <span class="shrink-0 inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold {{ $sBadge }}">
                                     {{ $statuses[$suggestion->status] ?? Str::headline($suggestion->status) }}

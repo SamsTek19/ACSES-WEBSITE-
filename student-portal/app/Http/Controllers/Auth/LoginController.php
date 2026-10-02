@@ -31,24 +31,53 @@ class LoginController extends Controller
     }
 
     /**
+     * Display the admin login form.
+     */
+    public function showAdminLoginForm(): View|RedirectResponse
+    {
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return view('auth.admin-login');
+    }
+
+    /**
      * Handle an incoming authentication request.
      */
     public function login(LoginRequest $request): RedirectResponse
     {
+        return $this->authenticate($request, ['student']);
+    }
+
+    /**
+     * Handle an incoming admin authentication request.
+     */
+    public function loginAdmin(LoginRequest $request): RedirectResponse
+    {
+        return $this->authenticate($request, ['admin']);
+    }
+
+    /**
+     * Authenticate against the guards allowed by the entry point.
+     *
+     * @param array<int, string> $guards
+     */
+    private function authenticate(LoginRequest $request, array $guards): RedirectResponse
+    {
         $loginId = trim($request->input('login_id', $request->input('email', '')));
         $password = $request->input('password');
         $remember = $request->boolean('remember');
-        $guards = ['admin', 'student'];
 
         // Check if there's a pending or rejected registration for this login ID (email, username, or index_number)
-        $pendingRegistration = PendingRegistration::where(function ($query) use ($loginId) {
+        $pendingRegistration = in_array('student', $guards, true) ? PendingRegistration::where(function ($query) use ($loginId) {
                 $query->where('email', $loginId)
                     ->orWhere('username', $loginId)
                     ->orWhere('index_number', $loginId);
             })
             ->whereIn('status', ['pending', 'rejected'])
             ->latest()
-            ->first();
+            ->first() : null;
 
         if ($pendingRegistration) {
             $message = match ($pendingRegistration->status) {
@@ -140,14 +169,16 @@ class LoginController extends Controller
      */
     public function logout(): RedirectResponse
     {
-        $guard = Auth::getDefaultDriver();
-        Auth::guard($guard)->logout();
+        $wasAdmin = Auth::guard('admin')->check();
+
+        Auth::guard('student')->logout();
+        Auth::guard('admin')->logout();
 
         request()->session()->invalidate();
         request()->session()->regenerateToken();
         request()->session()->forget(['pending_login_otp']);
 
-        return redirect()->route('login')
+        return redirect()->route($wasAdmin ? 'admin.login' : 'login')
             ->with('status', __('You have been logged out.'));
     }
 }

@@ -19,22 +19,6 @@
     }
 @endphp
 @php
-    // Get pending registrations count
-    try {
-        $pendingRegistrationsCount = \App\Models\PendingRegistration::pending()->count();
-    } catch (\Exception $e) {
-        $pendingRegistrationsCount = 0;
-    }
-
-    // Get pending dues verifications count
-    try {
-        $pendingDuesCount = \App\Models\Due::where('payment_status', 'pending_verification')
-            ->where('payment_method', 'manual')
-            ->count();
-    } catch (\Exception $e) {
-        $pendingDuesCount = 0;
-    }
-
     $navConfig = [
         [
             'section' => 'Core',
@@ -44,41 +28,6 @@
                     'route_name' => 'admin.dashboard',
                     'pattern' => 'admin.dashboard',
                     'icon' => 'ri-layout-grid-line',
-                ],
-                [
-                    'label' => 'Pending Registrations',
-                    'route_name' => 'admin.pending-registrations.index',
-                    'pattern' => 'admin.pending-registrations.*',
-                    'icon' => 'ri-user-received-2-line',
-                    'badge' => $pendingRegistrationsCount > 0 ? $pendingRegistrationsCount : null,
-                    'badge_color' => 'bg-amber-500',
-                    'href' => url('/admin/pending-registrations'),
-                ],
-                [
-                    'label' => 'Students',
-                    'route_name' => 'admin.students.index',
-                    'pattern' => 'admin.students.*',
-                    'icon' => 'ri-team-line',
-                ],
-            ]
-        ],
-        [
-            'section' => 'Finance',
-            'items' => [
-                [
-                    'label' => 'Dues & Fees',
-                    'route_name' => 'admin.dues.index',
-                    'pattern' => 'admin.dues.index',
-                    'icon' => 'ri-coins-line',
-                ],
-                [
-                    'label' => 'Verifications',
-                    'route_name' => 'admin.dues.verifications.index',
-                    'pattern' => 'admin.dues.verifications.*',
-                    'icon' => 'ri-file-shield-2-line',
-                    'badge' => $pendingDuesCount > 0 ? $pendingDuesCount : null,
-                    'badge_color' => 'bg-emerald-600',
-                    'href' => url('/admin/dues/verifications'),
                 ],
             ]
         ],

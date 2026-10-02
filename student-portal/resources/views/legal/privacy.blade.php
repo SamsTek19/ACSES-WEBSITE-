@@ -20,7 +20,7 @@
             <section class="space-y-3">
                 <h2 class="text-xl font-semibold text-slate-900">2. How we use your data</h2>
                 <ul class="list-decimal space-y-2 pl-5 text-sm leading-relaxed text-slate-600">
-                    <li>Authenticate you and deliver core functionality such as course registration and dues management.</li>
+                    <li>Authenticate you and deliver core functionality such as student account access and academic updates.</li>
                     <li>Send notifications about timetable changes, academic resources, and important announcements.</li>
                     <li>Monitor system health, detect abuse, and compile high-level analytics for service planning.</li>
                 </ul>

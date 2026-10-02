@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { EVENTS } from '../data/mockData';
 import { ArrowUpRight, Calendar, Clock, MapPin } from 'lucide-react';
+import { useEvents } from '../lib/useEvents';
 
 export const Events: React.FC = () => {
+  const { events, status } = useEvents();
   const [filter, setFilter] = useState<'All' | 'Upcoming' | 'Past'>('All');
 
-  const filteredEvents = EVENTS.filter(
+  const filteredEvents = events.filter(
     e => filter === 'All' || e.category === filter
   );
 
@@ -38,9 +39,12 @@ export const Events: React.FC = () => {
 
         {/* List */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {status === 'loading' && <p className="md:col-span-3 text-center text-slate-500">Loading events...</p>}
+          {status === 'error' && <p className="md:col-span-3 text-center text-slate-500">Events are temporarily unavailable.</p>}
+          {status === 'ready' && filteredEvents.length === 0 && <p className="md:col-span-3 text-center text-slate-500">No events match this filter.</p>}
           {filteredEvents.map((event) => (
             <div key={event.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col">
-              <img src={event.image} alt={event.title} className="h-48 w-full object-cover" />
+              <img src={event.image} alt={event.imageAlt ?? event.title} className="h-48 w-full object-cover" />
               <div className="p-6 flex-1 flex flex-col justify-between">
                 <div>
                   <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 ${
@@ -48,6 +52,7 @@ export const Events: React.FC = () => {
                   }`}>
                     {event.category}
                   </span>
+                  {event.eventType && <p className="text-xs font-semibold uppercase text-emerald-700 mb-2">{event.eventType}</p>}
                   <h3 className="font-bold text-slate-900 text-xl mb-2">{event.title}</h3>
                   <p className="text-slate-600 text-sm mb-4 leading-relaxed">{event.description}</p>
                 </div>
@@ -67,6 +72,7 @@ export const Events: React.FC = () => {
                     <div className="flex items-center space-x-2"><Calendar className="w-4 h-4 text-emerald-600" /><span>{event.date}</span></div>
                     <div className="flex items-center space-x-2"><Clock className="w-4 h-4 text-emerald-600" /><span>{event.time}</span></div>
                     <div className="flex items-center space-x-2"><MapPin className="w-4 h-4 text-emerald-600" /><span>{event.location}</span></div>
+                    {event.link && <a href={event.link} target="_blank" rel="noreferrer" className="inline-flex pt-2 font-semibold text-emerald-800 hover:text-emerald-600">More details <ArrowUpRight className="h-4 w-4" /></a>}
                   </div>
                 )}
               </div>

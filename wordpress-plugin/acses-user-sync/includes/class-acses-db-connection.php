@@ -56,10 +56,16 @@ class ACSES_DB_Connection {
      */
     public function get_portal_user($username) {
         if (!$this->portal_db) {
-            $this->connect();
+            if (!$this->connect()) {
+                return null;
+            }
         }
 
-        $table_name = $this->options['portal_table'];
+        $table_name = $this->get_portal_table_name();
+        if (!$table_name) {
+            return null;
+        }
+
         $query = $this->portal_db->prepare(
             "SELECT * FROM {$table_name} WHERE username = %s",
             $username
@@ -73,10 +79,16 @@ class ACSES_DB_Connection {
      */
     public function get_all_portal_users() {
         if (!$this->portal_db) {
-            $this->connect();
+            if (!$this->connect()) {
+                return array();
+            }
         }
 
-        $table_name = $this->options['portal_table'];
+        $table_name = $this->get_portal_table_name();
+        if (!$table_name) {
+            return array();
+        }
+
         $query = "SELECT * FROM {$table_name} ORDER BY username ASC";
         
         return $this->portal_db->get_results($query);
@@ -87,10 +99,15 @@ class ACSES_DB_Connection {
      */
     public function update_portal_user($user_id, $data) {
         if (!$this->portal_db) {
-            $this->connect();
+            if (!$this->connect()) {
+                return false;
+            }
         }
 
-        $table_name = $this->options['portal_table'];
+        $table_name = $this->get_portal_table_name();
+        if (!$table_name) {
+            return false;
+        }
         return $this->portal_db->update(
             $table_name,
             $data,
@@ -103,11 +120,22 @@ class ACSES_DB_Connection {
      */
     public function create_portal_user($data) {
         if (!$this->portal_db) {
-            $this->connect();
+            if (!$this->connect()) {
+                return false;
+            }
         }
 
-        $table_name = $this->options['portal_table'];
+        $table_name = $this->get_portal_table_name();
+        if (!$table_name) {
+            return false;
+        }
         return $this->portal_db->insert($table_name, $data);
+    }
+
+    private function get_portal_table_name() {
+        $table_name = isset($this->options['portal_table']) ? $this->options['portal_table'] : 'users';
+
+        return preg_match('/^[A-Za-z0-9_]+$/', $table_name) ? $table_name : false;
     }
 
     /**

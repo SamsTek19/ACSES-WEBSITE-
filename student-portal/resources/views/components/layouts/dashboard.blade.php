@@ -51,9 +51,7 @@
             @endif
 
             <main class="flex-1 pb-12 pt-4 sm:pt-6">
-                <x-dues-lock-overlay>
-                    {{ $slot ?? '' }}
-                </x-dues-lock-overlay>
+                {{ $slot ?? '' }}
             </main>
 
             @if ($footer)

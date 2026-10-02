@@ -6,8 +6,11 @@ export interface EventItem {
   location: string;
   category: 'Upcoming' | 'Past';
   memoriesLink?: string;
+  link?: string;
   description: string;
   image: string;
+  imageAlt?: string;
+  eventType?: string | null;
 }
 
 export interface NewsItem {

@@ -2,8 +2,6 @@
 
 namespace App\Services\Admin;
 
-use App\Models\CourseRegistration;
-use App\Models\Due;
 use App\Models\Event;
 use App\Models\Suggestion;
 use App\Models\SupportResource;
@@ -20,25 +18,8 @@ class AdminDashboardService
         $greeting = $this->greetingForNow();
         $now = Carbon::now();
 
-        $studentCount = User::query()
-            ->where('role', 'student')
-            ->count();
-
-        $outstandingDuesQuery = Due::query()->outstanding();
-        $outstandingDueCount = (clone $outstandingDuesQuery)->count();
-        $outstandingDueAmount = (float) (clone $outstandingDuesQuery)->sum('amount');
-
-        $registrationQuery = CourseRegistration::query();
-        $pendingRegistrations = (clone $registrationQuery)
-            ->whereIn('status', ['in_progress', 'submitted'])
-            ->count();
-        $submittedToday = (clone $registrationQuery)
-            ->whereDate('submitted_at', $now->toDateString())
-            ->count();
-        $approvedThisWeek = (clone $registrationQuery)
-            ->where('status', 'approved')
-            ->where('approved_at', '>=', $now->copy()->startOfWeek())
-            ->count();
+        $upcomingEventCount = Event::query()->upcoming()->count();
+        $resourcesTotal = SupportResource::query()->count();
 
         $suggestionsPending = Suggestion::query()
             ->where('status', 'pending')
@@ -50,28 +31,20 @@ class AdminDashboardService
 
         $overviewCards = [
             [
-                'label' => 'Students onboarded',
-                'value' => number_format($studentCount),
-                'description' => 'Active student accounts on the platform.',
-                'icon' => 'ri-user-star-fill',
-                'link' => route('admin.students.index'),
-                'cta' => 'Manage students',
+                'label' => 'Upcoming events',
+                'value' => number_format($upcomingEventCount),
+                'description' => 'Scheduled events ready for the public website.',
+                'icon' => 'ri-calendar-event-fill',
+                'link' => route('admin.events.index'),
+                'cta' => 'Manage events',
             ],
             [
-                'label' => 'Outstanding dues',
-                'value' => 'GHS ' . number_format($outstandingDueAmount, 2),
-                'description' => $outstandingDueCount . ' invoices pending payment.',
-                'icon' => 'ri-money-dollar-circle-fill',
-                'link' => route('admin.dues.index'),
-                'cta' => 'Review dues',
-            ],
-            [
-                'label' => 'Pending registrations',
-                'value' => number_format($pendingRegistrations),
-                'description' => $approvedThisWeek . ' approved this week.',
-                'icon' => 'ri-task-fill',
-                'link' => route('admin.course-registrations.index'),
-                'cta' => 'See registrations',
+                'label' => 'Learning resources',
+                'value' => number_format($resourcesTotal),
+                'description' => 'Resources available to the student community.',
+                'icon' => 'ri-book-open-fill',
+                'link' => route('admin.resources.index'),
+                'cta' => 'Manage resources',
             ],
             [
                 'label' => 'Suggestions awaiting review',
@@ -113,62 +86,17 @@ class AdminDashboardService
                 ];
             });
 
-        // Dues status breakdown for charts
-        $duesBreakdown = Due::query()
-            ->where('is_active', true)
-            ->selectRaw("payment_status, SUM(amount) as total_amount")
-            ->groupBy('payment_status')
-            ->pluck('total_amount', 'payment_status')
-            ->toArray();
-
-        $chartPaidAmount = (float) ($duesBreakdown['paid'] ?? 0);
-        $chartPendingAmount = (float) ($duesBreakdown['pending_verification'] ?? 0);
-        $chartOwingAmount = (float) ($duesBreakdown['owing'] ?? 0);
-        $totalDues = $chartPaidAmount + $chartPendingAmount + $chartOwingAmount;
-        $chartCollectionRate = $totalDues > 0 ? ($chartPaidAmount / $totalDues) * 100 : 0;
-
-        // Student counts grouped by class/programme
-        $classDistribution = User::query()
-            ->where('role', 'student')
-            ->selectRaw("class, COUNT(*) as count")
-            ->groupBy('class')
-            ->orderByDesc('count')
-            ->get();
-
-        $classLabels = $classDistribution->pluck('class')->map(fn($c) => $c ?? 'Unassigned')->toArray();
-        $classData = $classDistribution->pluck('count')->toArray();
-
         return [
             'adminName' => $adminName,
             'hero' => [
                 'greeting' => $greeting,
-                'message' => 'Monitor student activity, approvals, and support trends from a single view.',
+                'message' => 'Manage public content and review community feedback from a single view.',
                 'lastUpdated' => $now->isoFormat('MMMM D, YYYY [at] h:mm A'),
             ],
             'overviewCards' => $overviewCards,
-            'registrationSummary' => [
-                'pending' => $pendingRegistrations,
-                'submittedToday' => $submittedToday,
-                'approvedThisWeek' => $approvedThisWeek,
-            ],
-            'dueSummary' => [
-                'count' => $outstandingDueCount,
-                'amount' => $outstandingDueAmount,
-            ],
-            'resourcesTotal' => SupportResource::query()->count(),
+            'resourcesTotal' => $resourcesTotal,
             'upcomingEvents' => $upcomingEvents,
             'recentSuggestions' => $recentSuggestions,
-            'chartsData' => [
-                'dues' => [
-                    'labels' => ['Paid', 'Pending Verification', 'Outstanding'],
-                    'data' => [$chartPaidAmount, $chartPendingAmount, $chartOwingAmount],
-                    'collectionRate' => round($chartCollectionRate, 1),
-                ],
-                'students' => [
-                    'labels' => $classLabels,
-                    'data' => $classData,
-                ],
-            ],
         ];
     }
 

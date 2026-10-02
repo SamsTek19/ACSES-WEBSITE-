@@ -3,8 +3,6 @@
 namespace App\Services\Student;
 
 use App\Models\Announcement;
-use App\Models\CourseRegistration;
-use App\Models\Due;
 use App\Models\Event;
 use App\Models\AcademicTimelineEntry;
 use App\Models\SupportResource;
@@ -44,21 +42,20 @@ class StudentDashboardService
             'first_name' => (string) $displayName,
             'display_name' => (string) $displayName,
             'username' => (string) ($username ?? $displayName),
-            'message' => 'Stay on top of dues, course registration, and departmental updates in one place.',
+            'message' => 'Stay on top of departmental updates and campus life in one place.',
             'chips' => $chips,
         ];
     }
 
     public function quickActions(User $user): array
     {
-        $cacheKey = "student_actions_meta_{$user->id}";
+        $cacheKey = "student_actions_meta_v2_{$user->id}";
 
         return \Illuminate\Support\Facades\Cache::remember(
             $cacheKey,
             now()->addMinutes(10),
             function () use ($user) {
                 return [
-                    $this->outstandingDuesAction($user),
                     $this->announcementsAction($user),
                     $this->supportResourcesActionCard($user),
                 ];
@@ -274,55 +271,12 @@ class StudentDashboardService
             ],
             [
                 'title' => 'Knowledge base',
-                'description' => 'Browse how-to guides for dues payments, course registration, and account security.',
+                'description' => 'Browse how-to guides for account security and academic resources.',
                 'cta_label' => 'View articles',
                 'cta_url' => '#',
                 'badge_label' => 'Guide',
             ],
         ]);
-    }
-
-    protected function outstandingDuesAction(User $user): array
-    {
-        $outstandingDues = Due::query()
-            ->outstanding()
-            ->where('student_id', $user->getAuthIdentifier())
-            ->get();
-
-        $totalOwing = $outstandingDues->sum('amount');
-        $nextDueDate = $outstandingDues->min('due_date');
-
-        $state = 'All clear';
-        $summary = 'No outstanding dues at the moment.';
-
-        if ($totalOwing > 0) {
-            $dueDate = $nextDueDate ? Carbon::parse($nextDueDate) : null;
-
-            if ($dueDate && $dueDate->isPast()) {
-                $state = 'Overdue';
-            } elseif ($dueDate && $dueDate->isBefore(Carbon::now()->addDays(7))) {
-                $state = 'Due soon';
-            } else {
-                $state = 'Active';
-            }
-
-            $summary = sprintf(
-                'You have %d outstanding due%s awaiting payment%s',
-                $outstandingDues->count(),
-                $outstandingDues->count() === 1 ? '' : 's',
-                $dueDate ? ' (next due ' . $dueDate->format('M j') . ')' : ''
-            );
-        }
-
-        return [
-            'label' => 'Outstanding dues',
-            'summary' => $summary,
-            'value' => 'GHS ' . number_format((float) $totalOwing, 2),
-            'state' => $state,
-            'cta' => 'Review dues',
-            'cta_url' => route('student.dues.index'),
-            'icon_svg' => '<path d="M4 2h16v20l-4-2-4 2-4-2-4 2z" /><path d="M16 6H8" /><path d="M16 10H8" /><path d="M10 14H8" />',
-        ];
     }
 
     protected function announcementsAction(User $user): array
@@ -358,40 +312,6 @@ class StudentDashboardService
             'cta' => 'View announcements',
             'cta_url' => route('student.announcements.index'),
             'icon_svg' => '<path d="M4 11V5a2 2 0 0 1 2-2h1l4-2v18l-4-2H6a2 2 0 0 1-2-2v-2" /><path d="M18 7a3 3 0 0 1 0 6" /><path d="M18 3a7 7 0 0 1 0 14" />',
-        ];
-    }
-
-    protected function courseRegistrationAction(User $user): array
-    {
-        $registration = CourseRegistration::query()
-            ->where('student_id', $user->getAuthIdentifier())
-            ->first();
-
-        $statusMap = [
-            'not_started' => ['label' => 'Not started', 'state' => 'Start now', 'summary' => 'Begin your registration to secure your courses.'],
-            'in_progress' => ['label' => 'In progress', 'state' => 'Action needed', 'summary' => 'Upload pending documents to complete registration.'],
-            'submitted' => ['label' => 'Submitted', 'state' => 'Awaiting review', 'summary' => 'Your registration is under review by coordinators.'],
-            'approved' => ['label' => 'Approved', 'state' => 'Completed', 'summary' => 'Registration approved for the semester.'],
-        ];
-
-        $statusKey = $registration?->status ?? 'not_started';
-        $status = $statusMap[$statusKey] ?? $statusMap['not_started'];
-        $progress = $registration?->progress_percent ?? 0;
-        $pendingDocs = $registration?->pending_documents ?? 0;
-
-        $summary = $status['summary'];
-        if ($pendingDocs > 0 && $statusKey !== 'approved') {
-            $summary .= sprintf(' %d document%s pending.', $pendingDocs, $pendingDocs === 1 ? ' is' : 's are');
-        }
-
-        return [
-            'label' => 'Course registration',
-            'summary' => $summary,
-            'value' => $progress . '% complete',
-            'state' => $status['state'],
-            'cta' => $statusKey === 'approved' ? 'View submission' : 'Manage registration',
-            'cta_url' => '#',
-            'icon_svg' => '<path d="M8 4h8" /><path d="M9 2h6" /><path d="M9 6h6" /><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /><path d="m9 14 2 2 4-4" />',
         ];
     }
 

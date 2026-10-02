@@ -3,12 +3,12 @@ require_once '../config.php';
 header('X-Content-Type-Options: nosniff');
 
 // Check if user is logged in and is an admin
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || ($_SESSION['role'] ?? null) !== 'admin') {
     header("Location: ../access");
     exit();
 }
 
-$stmt = $pdo->prepare("SELECT * FROM admin_users WHERE user_id = ?");
+$stmt = $pdo->prepare("SELECT user_id FROM users WHERE user_id = ? AND role = 'admin'");
 $stmt->execute([$_SESSION['user_id']]);
 $admin = $stmt->fetch();
 
@@ -38,7 +38,7 @@ $positions = $stmt->fetchAll();
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
-    if (!validateCSRFToken($_POST['csrf_token'])) {
+    if (!isset($_POST['csrf_token']) || !validateCSRFToken($_POST['csrf_token'])) {
         echo json_encode(['success' => false, 'message' => 'Invalid request']);
         exit();
     }
@@ -47,6 +47,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $position_id = (int)$_POST['position_id'];
     $short_description = sanitizeInput($_POST['short_description']);
     $bio = sanitizeInput($_POST['bio']);
+
+    $stmt = $pdo->prepare('SELECT id FROM elections_positions WHERE id = ? AND election_id = ?');
+    $stmt->execute([$position_id, $election_id]);
+    if (!$stmt->fetch()) {
+        http_response_code(422);
+        echo json_encode(['success' => false, 'message' => 'Select a valid position for this election']);
+        exit();
+    }
     
     // Handle file upload
     $photo_url = null;

@@ -5,9 +5,9 @@
 ### Student portal
 
 Laravel 12 application serving students and administrators. It provides account
-registration and verification, password and OTP login, trusted devices, dues and
-payments, course registration, events, announcements, resources, suggestions,
-academic timelines, and administrative management.
+registration and verification, password and OTP login, trusted devices, events,
+announcements, resources, suggestions, academic timelines, and administrative
+management. Course-registration and dues/payment workflows are disabled.
 
 The application uses separate `student` and `admin` authentication guards backed
 by the shared `users` table. Public web routes are in `student-portal/routes/web.php`.
@@ -30,14 +30,17 @@ prefer a scoped, authenticated API.
 
 - Identity: `users`, `pending_registrations`, password and OTP tables.
 - Sessions and queues: `sessions`, `cache`, `jobs`, `failed_jobs`.
-- Student services: `dues`, payments, registrations, events, resources.
+- Student services: account applications, events, resources, and legacy course-registration and dues/payment tables.
+
+Legacy course-registration and dues/payment tables remain for historical
+compatibility; their feature routes and screens are disabled. Existing data is retained.
 - Elections: elections, positions, candidates, votes, access links, and audit logs.
 
 No production rows are included.
 
 ## External services
 
-Production can use SMTP, Paystack/RushPay, SMS, Sentry, and local server storage.
+Production can use SMTP, SMS, Sentry, and local server storage.
 All integrations are disabled or blank in the handoff configuration. Developers
 must mock them or use provider sandbox credentials stored only in an ignored `.env`.
 

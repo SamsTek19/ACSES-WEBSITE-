@@ -34,6 +34,8 @@ class AdminSuggestionService
             $query->where(function ($builder) use ($search) {
                 $builder->where('subject', 'like', "%{$search}%")
                     ->orWhere('message', 'like', "%{$search}%")
+                    ->orWhere('sender_name', 'like', "%{$search}%")
+                    ->orWhere('sender_email', 'like', "%{$search}%")
                     ->orWhereHas('user', function ($relation) use ($search) {
                         $relation->where('fullname', 'like', "%{$search}%")
                             ->orWhere('username', 'like', "%{$search}%")

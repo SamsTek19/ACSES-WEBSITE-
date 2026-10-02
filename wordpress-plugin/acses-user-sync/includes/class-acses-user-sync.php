@@ -95,6 +95,10 @@ class ACSES_User_Sync {
     public function authenticate_user($user, $username, $password) {
         // If WordPress authentication failed, try portal database
         if (is_wp_error($user)) {
+            if (get_user_by('login', $username)) {
+                return $user;
+            }
+
             $portal_user = $this->db_connection->get_portal_user($username);
             
             if ($portal_user && wp_check_password($password, $portal_user->password)) {

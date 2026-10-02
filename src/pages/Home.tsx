@@ -5,8 +5,9 @@ import {
   ArrowRight, Users, Calendar, Newspaper, BookOpen, Send, 
   CheckCircle2, Code2, Bot, ShieldCheck, Sparkles 
 } from 'lucide-react';
-import { EVENTS, NEWS, CLUBS, RESOURCES } from '../data/mockData';
+import { NEWS, CLUBS, RESOURCES } from '../data/mockData';
 import { MapSection } from '../components/MapSection';
+import { useEvents } from '../lib/useEvents';
 
 const heroImages = [
   {
@@ -28,9 +29,13 @@ const heroImages = [
 ];
 
 export const Home: React.FC = () => {
+  const { events, status: eventsStatus } = useEvents();
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const [heroImageIndex, setHeroImageIndex] = useState(0);
+  const contactApiUrl = import.meta.env.VITE_CONTACT_API_URL || 'http://127.0.0.1:8000/api/public/contact';
 
   useEffect(() => {
     const imageRotation = window.setInterval(() => {
@@ -40,11 +45,42 @@ export const Home: React.FC = () => {
     return () => window.clearInterval(imageRotation);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormSubmitted(true);
-    setFormData({ name: '', email: '', subject: '', message: '' });
-    setTimeout(() => setFormSubmitted(false), 5000);
+    setSubmitError('');
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(contactApiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        let errorMessage = 'Unable to send your message right now. Please try again later.';
+
+        try {
+          const payload = await response.json();
+          errorMessage = payload.message || errorMessage;
+        } catch {
+          // Ignore JSON decode issues and keep the fallback message.
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      setFormSubmitted(true);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      window.setTimeout(() => setFormSubmitted(false), 5000);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Unable to send your message right now. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -141,9 +177,12 @@ export const Home: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {EVENTS.slice(0, 3).map((event) => (
+            {eventsStatus === 'loading' && <p className="md:col-span-3 text-center text-slate-500">Loading events...</p>}
+            {eventsStatus === 'error' && <p className="md:col-span-3 text-center text-slate-500">Events are temporarily unavailable.</p>}
+            {eventsStatus === 'ready' && events.length === 0 && <p className="md:col-span-3 text-center text-slate-500">No events have been published yet.</p>}
+            {events.slice(0, 3).map((event) => (
               <div key={event.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
-                <img src={event.image} alt={event.title} className="h-48 w-full object-cover" />
+                <img src={event.image} alt={event.imageAlt ?? event.title} className="h-48 w-full object-cover" />
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
                     <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 ${
@@ -151,6 +190,7 @@ export const Home: React.FC = () => {
                     }`}>
                       {event.category}
                     </span>
+                    {event.eventType && <p className="text-xs font-semibold uppercase text-emerald-700 mb-2">{event.eventType}</p>}
                     <h3 className="font-bold text-slate-900 text-lg mb-2">{event.title}</h3>
                     <p className="text-slate-600 text-sm line-clamp-2 mb-4">{event.description}</p>
                   </div>
@@ -162,6 +202,7 @@ export const Home: React.FC = () => {
                   ) : (
                     <div className="pt-4 border-t border-slate-100 text-xs text-slate-500 space-y-1">
                       <div className="flex items-center space-x-2"><Calendar className="w-3.5 h-3.5 text-emerald-600" /><span>{event.date} • {event.time}</span></div>
+                      {event.link && <a href={event.link} target="_blank" rel="noreferrer" className="inline-flex pt-2 font-semibold text-emerald-800 hover:text-emerald-600">More details <ArrowRight className="w-3.5 h-3.5 ml-1" /></a>}
                     </div>
                   )}
                 </div>
@@ -303,6 +344,12 @@ export const Home: React.FC = () => {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
+                {submitError && (
+                  <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-sm">
+                    {submitError}
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Your Name</label>
@@ -354,10 +401,11 @@ export const Home: React.FC = () => {
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 bg-emerald-800 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition-colors flex items-center justify-center space-x-2"
+                  disabled={isSubmitting}
+                  className="w-full py-3.5 bg-emerald-800 hover:bg-emerald-700 disabled:bg-emerald-500 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-md transition-colors flex items-center justify-center space-x-2"
                 >
                   <Send className="w-4 h-4" />
-                  <span>Send Message</span>
+                  <span>{isSubmitting ? 'Sending...' : 'Send Message'}</span>
                 </button>
               </form>
             )}

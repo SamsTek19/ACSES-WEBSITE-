@@ -2,12 +2,8 @@
 require_once 'config.php';
 header('X-Content-Type-Options: nosniff');
 
-// Debug logging
-error_log("Dashboard access attempt - Session data: " . print_r($_SESSION, true));
-
 // Check if user is logged in
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-    error_log("Session validation failed - Redirecting to access.php");
     header("Location: access");
     exit();
 }
@@ -17,15 +13,12 @@ $stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ?");
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch();
 
-if (!$user) {
-    error_log("User not found in database - Clearing session and redirecting");
+if (!$user || $user['role'] !== 'student') {
     session_unset();
     session_destroy();
     header("Location: access");
     exit();
 }
-
-error_log("User authenticated successfully - Proceeding to dashboard");
 
 // Get active elections
 $stmt = $pdo->prepare("
@@ -42,13 +35,34 @@ $elections = $stmt->fetchAll();
 // Handle vote submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
-    if (!validateCSRFToken($_POST['csrf_token'])) {
+    if (!isset($_POST['csrf_token']) || !validateCSRFToken($_POST['csrf_token'])) {
         echo json_encode(['success' => false, 'message' => 'Invalid request']);
         exit();
     }
 
-    $election_id = (int)$_POST['election_id'];
-    $candidate_id = (int)$_POST['candidate_id'];
+    $election_id = filter_input(INPUT_POST, 'election_id', FILTER_VALIDATE_INT);
+    $candidate_id = filter_input(INPUT_POST, 'candidate_id', FILTER_VALIDATE_INT);
+    if (!$election_id || !$candidate_id) {
+        http_response_code(422);
+        echo json_encode(['success' => false, 'message' => 'Invalid vote selection']);
+        exit();
+    }
+
+    $stmt = $pdo->prepare("SELECT id FROM elections WHERE id = ? AND status = 'active' AND start_date <= NOW() AND end_date >= NOW()");
+    $stmt->execute([$election_id]);
+    if (!$stmt->fetch()) {
+        http_response_code(409);
+        echo json_encode(['success' => false, 'message' => 'This election is not open for voting']);
+        exit();
+    }
+
+    $stmt = $pdo->prepare('SELECT id FROM elections_candidates WHERE id = ? AND election_id = ?');
+    $stmt->execute([$candidate_id, $election_id]);
+    if (!$stmt->fetch()) {
+        http_response_code(422);
+        echo json_encode(['success' => false, 'message' => 'Candidate does not belong to this election']);
+        exit();
+    }
     
     // Check if user has already voted
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM elections_votes WHERE election_id = ? AND user_id = ?");
@@ -59,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         // Record the vote
         $stmt = $pdo->prepare("INSERT INTO elections_votes (election_id, user_id, candidate_id, voted_at, ip_address) VALUES (?, ?, ?, NOW(), ?)");
-        if ($stmt->execute([$election_id, $_SESSION['user_id'], $candidate_id, $_SERVER['REMOTE_ADDR']])) {
+        if ($stmt->execute([$election_id, $_SESSION['user_id'], $candidate_id, $_SERVER['REMOTE_ADDR'] ?? ''])) {
             echo json_encode(['success' => true, 'message' => 'Your vote has been recorded successfully']);
             exit();
         } else {

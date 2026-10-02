@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\PendingRegistration;
 use App\Models\User;
-use App\Services\Admin\AdminDueService;
 use App\Services\Auth\EmailVerificationService;
 use App\Services\Registration\PendingRegistrationEmailService;
 use App\Services\Registration\PendingRegistrationService;
@@ -20,7 +19,6 @@ use Illuminate\View\View;
 class RegisterController extends Controller
 {
     public function __construct(
-        private readonly AdminDueService $dues,
         private readonly StudentEmailValidator $emailValidator,
         private readonly PendingRegistrationService $pendingService,
         private readonly PendingRegistrationEmailService $pendingEmailService,
@@ -223,8 +221,6 @@ class RegisterController extends Controller
             'year' => $data['year'],
             'role' => 'student',
         ]);
-
-        $this->dues->syncStudent($user);
 
         app(EmailVerificationService::class)->send($user);
 

@@ -48,10 +48,5 @@
                 <i data-lucide="arrow-right" class="text-sm" aria-hidden="true"></i>
             </button>
         </form>
-
-        <p class="mt-8 text-center text-sm text-slate-500">
-            Student access?
-            <a href="{{ route('login') }}" class="font-medium text-[#0b3019] hover:underline">Go to student login</a>
-        </p>
     </div>
 </x-layouts.auth>

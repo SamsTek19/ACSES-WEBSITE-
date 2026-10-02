@@ -25,7 +25,6 @@ You can now log in to the ACSES Portal and access all student features:
 
 - 📢 View announcements and updates
 - 📅 Check upcoming events
-- 💳 Manage your dues and payments
 - 📚 Access academic resources
 - 💡 Submit suggestions
 

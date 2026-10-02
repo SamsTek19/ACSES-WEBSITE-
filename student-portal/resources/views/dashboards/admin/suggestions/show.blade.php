@@ -43,9 +43,9 @@
         <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-500 animate-fade-slide">
             <span class="inline-flex items-center gap-1.5">
                 <i class="ri-user-line text-slate-400"></i>
-                {{ $suggestion->user?->fullname ?? $suggestion->user?->username ?? 'Unknown student' }}
-                @if ($suggestion->user?->email)
-                    · {{ $suggestion->user?->email }}
+                {{ $suggestion->user?->fullname ?? $suggestion->user?->username ?? ($suggestion->user_id === null ? ($suggestion->sender_name ?? 'Website contact') : 'Unknown student') }}
+                @if ($suggestion->user?->email ?? $suggestion->sender_email)
+                    · {{ $suggestion->user?->email ?? $suggestion->sender_email }}
                 @endif
             </span>
             <span class="inline-flex items-center gap-1.5">

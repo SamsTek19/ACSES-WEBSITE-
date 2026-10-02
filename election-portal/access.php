@@ -21,6 +21,14 @@ function completeAccessLinkLogin(array $accessLink): bool {
         return false;
     }
 
+    $stmt = $pdo->prepare("UPDATE elections_access_links SET used = 1 WHERE id = ? AND token = ? AND hash = ? AND expiry > NOW() AND (used = 0 OR used IS NULL)");
+    $stmt->execute([$accessLink['id'], $accessLink['token'], $accessLink['hash']]);
+
+    if ($stmt->rowCount() === 0) {
+        $error = "This access link has already been used.";
+        return false;
+    }
+
     session_regenerate_id(true);
 
     $_SESSION['user_id'] = $user['user_id'];
@@ -29,14 +37,6 @@ function completeAccessLinkLogin(array $accessLink): bool {
     $_SESSION['fullname'] = $user['fullname'];
     $_SESSION['email'] = $user['email'];
     $_SESSION['logged_in'] = true;
-
-    $stmt = $pdo->prepare("UPDATE elections_access_links SET used = 1 WHERE id = ? AND (used = 0 OR used IS NULL)");
-    $stmt->execute([$accessLink['id']]);
-
-    if ($stmt->rowCount() === 0) {
-        $error = "This access link has already been used.";
-        return false;
-    }
 
     try {
         $stmt = $pdo->prepare("INSERT INTO elections_audit_log (user_id, action, details, ip_address, user_agent) VALUES (?, ?, ?, ?, ?)");
@@ -112,13 +112,9 @@ if (!isset($_SESSION['csrf_token'])) {
 $csrf_token = $_SESSION['csrf_token'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['login_token'])) {
-    error_log("Access.php script started");
-    error_log("POST data received: " . print_r($_POST, true));
-    
     // Validate CSRF token
     if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) || 
         !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        error_log("CSRF token validation failed");
         $error = "Invalid request. Please try again.";
         // Generate new token after failed attempt
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));

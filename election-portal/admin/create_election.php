@@ -1,13 +1,4 @@
 <?php
-// Enable error reporting
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// Set error logging
-ini_set('log_errors', 1);
-ini_set('error_log', '../logs/php-error.log');
-
 require_once '../config.php';
 header('X-Content-Type-Options: nosniff');
 
@@ -21,7 +12,6 @@ function sanitizeInput($data) {
 
 // Check if user is logged in and is an admin
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || $_SESSION['role'] !== 'admin') {
-    error_log("Access Denied - Session validation failed. Session data: " . print_r($_SESSION, true));
     header("Location: ../access");
     exit();
 }
