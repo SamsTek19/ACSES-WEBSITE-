@@ -7,6 +7,14 @@
     <link rel="icon" type="image/png" href="/acses-logo.png" />
   </head>
   <body>
+    <form name="public-contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="public-contact" />
+      <p><label>Leave this field empty<input name="bot-field" /></label></p>
+      <input name="name" />
+      <input name="email" />
+      <input name="subject" />
+      <textarea name="message"></textarea>
+    </form>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './src/components/Navbar';
 import { Footer } from './src/components/Footer';
@@ -11,6 +11,8 @@ import { Executives } from './src/pages/Executives';
 import { PrivacyPolicyPage } from './src/pages/PrivacyPolicyPage';
 import { TermsPage } from './src/pages/TermsPage';
 import { AccessibilityPage } from './src/pages/AccessibilityPage';
+
+const PortalApp = lazy(() => import('./src/portal/PortalApp').then((module) => ({ default: module.PortalApp })));
 
 const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation();
@@ -27,6 +29,7 @@ export const App: React.FC = () => {
     <Router>
       <ScrollToTop />
       <Routes>
+        <Route path="/portal/*" element={<Suspense fallback={<div className="p-8 text-sm text-slate-600">Loading portal...</div>}><PortalApp /></Suspense>} />
         <Route path="*" element={<PublicSite />} />
       </Routes>
     </Router>

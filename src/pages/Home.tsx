@@ -35,7 +35,6 @@ export const Home: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [heroImageIndex, setHeroImageIndex] = useState(0);
-  const contactApiUrl = import.meta.env.VITE_CONTACT_API_URL || 'http://127.0.0.1:8000/api/public/contact';
 
   useEffect(() => {
     const imageRotation = window.setInterval(() => {
@@ -51,26 +50,16 @@ export const Home: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(contactApiUrl, {
+      const response = await fetch('/', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify(formData),
+        body: new URLSearchParams({ 'form-name': 'public-contact', ...formData }).toString(),
       });
 
       if (!response.ok) {
-        let errorMessage = 'Unable to send your message right now. Please try again later.';
-
-        try {
-          const payload = await response.json();
-          errorMessage = payload.message || errorMessage;
-        } catch {
-          // Ignore JSON decode issues and keep the fallback message.
-        }
-
-        throw new Error(errorMessage);
+        throw new Error('Unable to send your message right now. Please try again later.');
       }
 
       setFormSubmitted(true);
@@ -343,7 +332,9 @@ export const Home: React.FC = () => {
                 <span>Thank you! Your message has been submitted successfully. We will get back to you shortly.</span>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form name="public-contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" onSubmit={handleSubmit} className="space-y-4">
+                <input type="hidden" name="form-name" value="public-contact" />
+                <p hidden><label>Leave this field empty<input name="bot-field" /></label></p>
                 {submitError && (
                   <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-sm">
                     {submitError}
@@ -355,6 +346,7 @@ export const Home: React.FC = () => {
                     <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Your Name</label>
                     <input
                       type="text"
+                      name="name"
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -366,6 +358,7 @@ export const Home: React.FC = () => {
                     <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Email Address</label>
                     <input
                       type="email"
+                      name="email"
                       required
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -379,6 +372,7 @@ export const Home: React.FC = () => {
                   <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Subject</label>
                   <input
                     type="text"
+                    name="subject"
                     required
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
@@ -390,6 +384,7 @@ export const Home: React.FC = () => {
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">Message</label>
                   <textarea
+                    name="message"
                     rows={4}
                     required
                     value={formData.message}
