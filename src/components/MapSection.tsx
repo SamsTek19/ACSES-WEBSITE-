@@ -1,17 +1,38 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { MapPin, Navigation, Building2 } from 'lucide-react';
 
 export const MapSection: React.FC = () => {
   return (
-    <section className="py-16 bg-slate-50 border-t border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-10">
+    <section className="relative isolate overflow-hidden py-16 bg-slate-50 border-t border-slate-200">
+      <motion.div
+        aria-hidden="true"
+        animate={{ y: [0, -12, 0], rotate: [0, 5, 0] }}
+        transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+        className="pointer-events-none absolute right-[8%] top-12 text-emerald-950/[0.055]"
+      >
+        <MapPin className="h-20 w-20" strokeWidth={1.2} />
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 24, scale: 0.985 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ duration: 0.55, ease: 'easeOut' }}
+        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          className="text-center max-w-2xl mx-auto mb-10"
+        >
           <span className="text-emerald-700 font-semibold text-sm uppercase tracking-wider">Locate Us</span>
           <h2 className="text-3xl font-extrabold text-slate-900 mt-2">Department Location</h2>
           <p className="text-slate-600 mt-2">
             Visit our state-of-the-art academic complex, computational labs, and faculty offices.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch rounded-2xl overflow-hidden shadow-lg bg-white border border-slate-200">
           {/* Map Details Panel */}
@@ -63,7 +84,7 @@ export const MapSection: React.FC = () => {
             ></iframe>
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

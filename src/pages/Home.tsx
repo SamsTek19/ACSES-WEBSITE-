@@ -28,6 +28,48 @@ const heroImages = [
   },
 ];
 
+const ScrollReveal: React.FC<React.PropsWithChildren<{ className?: string; delay?: number }>> = ({
+  children,
+  className,
+  delay = 0,
+}) => (
+  <motion.div
+    initial={{ opacity: 0, y: 24, scale: 0.985 }}
+    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+    viewport={{ once: false, amount: 0.1 }}
+    transition={{ duration: 0.55, delay, ease: 'easeOut' }}
+    className={className}
+  >
+    {children}
+  </motion.div>
+);
+
+const SectionTechAccents: React.FC<{ dark?: boolean; variation?: number }> = ({ dark = false, variation = 0 }) => {
+  const icons = [Code2, Bot, ShieldCheck, Sparkles, BookOpen, Newspaper, Users];
+  const MainIcon = icons[variation % icons.length];
+  const SecondaryIcon = icons[(variation + 3) % icons.length];
+  const iconColor = dark ? 'text-emerald-100/[0.07]' : 'text-emerald-950/[0.055]';
+
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+      <motion.div
+        animate={{ y: [0, -12, 0], rotate: [0, 5, 0] }}
+        transition={{ duration: 13 + variation, repeat: Infinity, ease: 'easeInOut' }}
+        className={`absolute right-[8%] top-12 ${iconColor}`}
+      >
+        <MainIcon className="h-20 w-20" strokeWidth={1.2} />
+      </motion.div>
+      <motion.div
+        animate={{ y: [0, 10, 0], rotate: [0, -5, 0] }}
+        transition={{ duration: 16 + variation, repeat: Infinity, ease: 'easeInOut' }}
+        className={`absolute bottom-10 left-[7%] ${iconColor}`}
+      >
+        <SecondaryIcon className="h-14 w-14" strokeWidth={1.2} />
+      </motion.div>
+    </div>
+  );
+};
+
 export const Home: React.FC = () => {
   const { events, status: eventsStatus } = useEvents();
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
@@ -75,23 +117,25 @@ export const Home: React.FC = () => {
   return (
     <div className="space-y-0">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-emerald-950 via-emerald-900 to-slate-900 text-white overflow-hidden py-20 lg:py-28">
-        <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:24px_24px] opacity-10"></div>
+      <section className="relative isolate overflow-hidden py-20 text-white lg:py-28">
+        <img
+          src={heroImages[heroImageIndex].src}
+          alt={heroImages[heroImageIndex].alt}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-slate-950/65"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/70 via-slate-950/35 to-transparent"></div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="flex items-center">
             
             {/* Hero Text */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="space-y-6"
+              className="max-w-3xl space-y-6"
             >
-              <div className="inline-flex items-center space-x-2 bg-emerald-800/60 border border-emerald-500/30 px-3.5 py-1.5 rounded-full text-xs font-semibold text-emerald-300">
-                <img src="/acses-logo.png" alt="ACSES logo" className="h-7 w-7 rounded-md bg-white object-contain" />
-                <span>Welcome to ACSES Official</span>
-              </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
                 Empowering Minds, <br />
                 <span className="text-emerald-400">Engineering Futures.</span>
@@ -117,45 +161,15 @@ export const Home: React.FC = () => {
               </div>
             </motion.div>
 
-            {/* Hero Images Grid */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="grid grid-cols-2 gap-4 relative"
-            >
-              <div className="space-y-4">
-                <img
-                  src={heroImages[heroImageIndex].src}
-                  alt={heroImages[heroImageIndex].alt}
-                  className="rounded-2xl shadow-2xl object-cover h-48 sm:h-64 w-full border-2 border-emerald-500/20"
-                />
-                <div className="bg-emerald-800/80 backdrop-blur-md p-4 rounded-2xl border border-emerald-400/30">
-                  <p className="text-2xl font-bold text-white">ACSES</p>
-                  <p className="text-xs text-emerald-200">The Future Of Technology</p>
-                </div>
-              </div>
-              <div className="space-y-4 pt-8">
-                <div className="bg-emerald-800/80 backdrop-blur-md p-4 rounded-2xl border border-emerald-400/30">
-                  <p className="text-2xl font-bold text-white">8+</p>
-                  <p className="text-xs text-emerald-200">Active Clubs</p>
-                </div>
-                <img
-                  src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=600"
-                  alt="Robotics project engineering"
-                  className="rounded-2xl shadow-2xl object-cover h-48 sm:h-64 w-full border-2 border-emerald-500/20"
-                />
-              </div>
-            </motion.div>
-
           </div>
         </div>
       </section>
 
       {/* Events Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+      <section className="relative isolate overflow-hidden py-20 bg-white">
+        <SectionTechAccents variation={0} />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal className="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
               <span className="text-emerald-700 font-semibold text-sm uppercase tracking-wider">Department Activities</span>
               <h2 className="text-3xl font-extrabold text-slate-900 mt-1">Upcoming & Past Events</h2>
@@ -163,14 +177,14 @@ export const Home: React.FC = () => {
             <Link to="/events" className="mt-4 md:mt-0 text-emerald-700 font-semibold hover:text-emerald-800 flex items-center">
               View All Events <ArrowRight className="w-4 h-4 ml-1" />
             </Link>
-          </div>
+          </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {eventsStatus === 'loading' && <p className="md:col-span-3 text-center text-slate-500">Loading events...</p>}
             {eventsStatus === 'error' && <p className="md:col-span-3 text-center text-slate-500">Events are temporarily unavailable.</p>}
             {eventsStatus === 'ready' && events.length === 0 && <p className="md:col-span-3 text-center text-slate-500">No events have been published yet.</p>}
-            {events.slice(0, 3).map((event) => (
-              <div key={event.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
+            {events.slice(0, 3).map((event, index) => (
+              <ScrollReveal key={event.id} delay={index * 0.12} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
                 <img src={event.image} alt={event.imageAlt ?? event.title} loading="lazy" decoding="async" className="h-48 w-full object-cover" />
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
@@ -195,16 +209,17 @@ export const Home: React.FC = () => {
                     </div>
                   )}
                 </div>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
       {/* News Section */}
-      <section className="py-20 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+      <section className="relative isolate overflow-hidden py-20 bg-slate-50">
+        <SectionTechAccents variation={1} />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal className="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
               <span className="text-emerald-700 font-semibold text-sm uppercase tracking-wider">Stay Informed</span>
               <h2 className="text-3xl font-extrabold text-slate-900 mt-1">Latest News & Announcements</h2>
@@ -212,11 +227,11 @@ export const Home: React.FC = () => {
             <Link to="/news" className="mt-4 md:mt-0 text-emerald-700 font-semibold hover:text-emerald-800 flex items-center">
               View All News <ArrowRight className="w-4 h-4 ml-1" />
             </Link>
-          </div>
+          </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {NEWS.slice(0, 3).map((item) => (
-              <div key={item.id} className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col">
+            {NEWS.slice(0, 3).map((item, index) => (
+              <ScrollReveal key={item.id} delay={index * 0.12} className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col">
                 <img src={item.image} alt={item.title} className="h-44 w-full object-cover" />
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>
@@ -229,24 +244,25 @@ export const Home: React.FC = () => {
                     <span>{item.date}</span>
                   </div>
                 </div>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
       {/* Clubs Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
+      <section className="relative isolate overflow-hidden py-20 bg-white">
+        <SectionTechAccents variation={2} />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal className="text-center max-w-2xl mx-auto mb-12">
             <span className="text-emerald-700 font-semibold text-sm uppercase tracking-wider">Student Life</span>
             <h2 className="text-3xl font-extrabold text-slate-900 mt-1">Student Communities & Clubs</h2>
             <p className="text-slate-600 mt-2">Get involved in student-led technical organizations, hackathons, and collaborative research teams.</p>
-          </div>
+          </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {CLUBS.slice(0, 3).map((club) => (
-              <div key={club.id} className="p-6 bg-emerald-50/50 rounded-2xl border border-emerald-100 hover:border-emerald-300 transition-colors">
+            {CLUBS.slice(0, 3).map((club, index) => (
+              <ScrollReveal key={club.id} delay={index * 0.12} className="p-6 bg-emerald-50/50 rounded-2xl border border-emerald-100 hover:border-emerald-300 transition-colors">
                 {club.image && (
                   <img
                     src={club.image}
@@ -266,10 +282,10 @@ export const Home: React.FC = () => {
                     </span>
                   ))}
                 </div>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
-          <div className="mt-10 text-center">
+          <ScrollReveal className="mt-10 text-center" delay={0.25}>
             <Link
               to="/clubs"
               className="inline-flex items-center gap-2 rounded-xl bg-emerald-800 px-6 py-3 font-bold text-white transition-colors hover:bg-emerald-700"
@@ -277,14 +293,15 @@ export const Home: React.FC = () => {
               View all clubs
               <ArrowRight className="h-4 w-4" />
             </Link>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* Resources Section */}
-      <section className="py-20 bg-slate-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+      <section className="relative isolate overflow-hidden py-20 bg-slate-900 text-white">
+        <SectionTechAccents dark variation={3} />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal className="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
               <span className="text-emerald-400 font-semibold text-sm uppercase tracking-wider">Academic Support</span>
               <h2 className="text-3xl font-extrabold text-white mt-1">Useful Departmental Resources</h2>
@@ -292,11 +309,11 @@ export const Home: React.FC = () => {
             <Link to="/resources" className="mt-4 md:mt-0 text-emerald-400 font-semibold hover:text-emerald-300 flex items-center">
               Browse All Resources <ArrowRight className="w-4 h-4 ml-1" />
             </Link>
-          </div>
+          </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {RESOURCES.slice(0, 4).map((res) => (
-              <div key={res.id} className="p-6 bg-slate-800/80 rounded-2xl border border-slate-700 flex justify-between items-start">
+            {RESOURCES.slice(0, 4).map((res, index) => (
+              <ScrollReveal key={res.id} delay={index * 0.12} className="p-6 bg-slate-800/80 rounded-2xl border border-slate-700 flex justify-between items-start">
                 <div className="space-y-2">
                   <span className="px-2.5 py-1 bg-emerald-900/60 text-emerald-300 rounded-md text-xs font-semibold">
                     {res.category}
@@ -310,16 +327,17 @@ export const Home: React.FC = () => {
                 >
                   <span>Download</span>
                 </a>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
       {/* Get In Touch Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto bg-slate-50 p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-sm">
+      <section className="relative isolate overflow-hidden py-20 bg-white">
+        <SectionTechAccents variation={4} />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal className="max-w-3xl mx-auto bg-slate-50 p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-sm">
             <div className="text-center mb-8">
               <span className="text-emerald-700 font-semibold text-sm uppercase tracking-wider">Reach Out</span>
               <h2 className="text-3xl font-extrabold text-slate-900 mt-1">Get In Touch</h2>
@@ -404,7 +422,7 @@ export const Home: React.FC = () => {
                 </button>
               </form>
             )}
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
